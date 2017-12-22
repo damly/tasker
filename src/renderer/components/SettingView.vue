@@ -18,7 +18,11 @@
     <div class="setting-layout">
         <Row type="flex">
             <Col span="7" class="setting-layout-left">
-            <Table height="440" border :columns="columns" :data="settings.accounts"></Table>
+            <Table height="440" border :columns="columns"
+                   :data="settings.accounts"
+                   no-data-text="您还未添加微信账号"
+            >
+            </Table>
             </Col>
             <Col span="17" class="setting-layout-right">
             <Card>

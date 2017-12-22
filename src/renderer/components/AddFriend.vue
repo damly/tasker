@@ -6,7 +6,7 @@
     }
 
     .add-layout-left {
-        height: 100%;
+        height: 440px;
     }
 
     .add-layout-right {
@@ -17,66 +17,50 @@
 <template>
     <div class="add-layout">
         <Row type="flex">
-            <Col span="6" class="add-layout-left">
-            <Card>
-                <Table height="300" border :columns="helloColumns" :data="helloData"></Table>
+            <Col span="6" class="add-layout-left" style="padding-left: 5px">
+            <div>
+                <Table height="310" border :columns="helloColumns" :data="helloData" no-data-text="暂无验证内容"></Table>
                 <div>
                     <Input style="margin-top: 10px" type="textarea" v-model="formHello.hello" placeholder="请输入验证内容">
                     <Icon type="person" slot="prepend"></Icon>
                     </Input>
-                    <Button style="margin-top: 10px" type="primary" size="small" @click="handleAddSubmit()">
+                </div>
+                <div>
+                    <Button style="margin-top: 10px" size="small" @click="handleAddSubmit()">
                         添加验证内容
                     </Button>
                 </div>
-            </Card>
+                <div>
+                    <Checkbox v-model="single" style="margin-top: 5px">随机发送验证内容</Checkbox>
+                </div>
+            </div>
             </Col>
             <Col span="18" class="add-layout-right">
-            <Card>
-                <Button type="primary" size="small" @click="handleAddSubmit()">
-                    从 execl 导入账号
-                </Button>
-                <Row type="flex">
-                    <Col span="6">
-                        <Table style="margin-top: 5px" height="300" border :columns="friendColumns" :data="friendData"></Table>
-                    </Col>
-                    <Col span="18">
-                        <Table style="margin-top: 5px" height="300" border :columns="logColumns" :data="logData"></Table>
-                    </Col>
-                </Row>
-                <div style="padding: 10px">
-                    <Button type="primary" size="small" @click="handleAddSubmit()">
-                        操作1
-                    </Button>
-                    <Button type="primary" size="small" @click="handleAddSubmit()">
-                        操作2
-                    </Button>
-                </div>
-            </Card>
+            <Tabs>
+                <TabPane label="导入添加好友" :disabled="disableAddFromInput">
+                    <AddFromInput></AddFromInput>
+                </TabPane>
+                <TabPane label="从好友群添加" :disabled="disableAddFromGroup">
+                    <AddFromGroup></AddFromGroup>
+                </TabPane>
+            </Tabs>
             </Col>
         </Row>
     </div>
 </template>
 <script>
+  import { onEvent } from './Event'
+  import AddFromInput from './AddFromInput.vue'
+  import AddFromGroup from './AddFromGroup.vue'
   export default {
+    components: { AddFromInput, AddFromGroup },
     data () {
       return {
+        disableAddFromInput: false,
+        disableAddFromGroup: false,
         formHello: {
           hello: ''
         },
-        ruleInline: {
-          account: [
-            {required: true, message: '请输入账号.', trigger: 'blur'}
-          ],
-          password: [
-            {required: true, message: '请输入密码.', trigger: 'blur'}
-          ]
-        },
-        friendColumns: [
-          {
-            title: '账号',
-            key: 'account'
-          }
-        ],
         helloColumns: [
           {
             title: '验证内容',
@@ -95,7 +79,7 @@
                   },
                   on: {
                     click: () => {
-                      this.handleRemoveAccount(params.index)
+                      this.handleRemoveText(params.index)
                     }
                   }
                 }, '删除')
@@ -103,21 +87,32 @@
             }
           }
         ],
-        logColumns: [
-          {
-            title: '日志',
-            key: 'log'
-          }
-        ],
-        logData: [],
-        friendData: [],
         helloData: []
       }
     },
     created () {
     },
+    mounted () {
+      let that = this
+      onEvent((data) => {
+        console.log('event:', data)
+        if (data.state && data.page === 'AddFromGroup') {
+          that.disableAddFromGroup = false
+          that.disableAddFromInput = true
+        } else if (data.state && data.page === 'AddFromInput') {
+          that.disableAddFromInput = false
+          that.disableAddFromGroup = true
+        } else if (data.state) {
+          that.disableAddFromInput = true
+          that.disableAddFromGroup = true
+        } else {
+          that.disableAddFromInput = false
+          that.disableAddFromGroup = false
+        }
+      })
+    },
     methods: {
-      handleRemoveAccount (index) {
+      handleRemoveText (index) {
         this.helloData.splice(index, 1)
       },
       handleAddSubmit (name) {

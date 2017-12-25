@@ -7,6 +7,8 @@
 
     .setting-layout-left {
         height: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
     }
 
     .setting-layout-right {
@@ -16,32 +18,22 @@
 </style>
 <template>
     <div class="setting-layout">
-        <Row type="flex">
+        <Row type="flex" >
             <Col span="7" class="setting-layout-left">
-            <Table height="440" border :columns="columns"
-                   :data="settings.accounts"
-                   no-data-text="您还未添加微信账号"
-            >
-            </Table>
+                <Table height="320" border :columns="columns"
+                       :data="settings.accounts"
+                       no-data-text="您还未添加微信账号"
+                >
+                </Table>
+                <Input type="text" v-model="formAccount.account" placeholder="账号" style="margin-top: 5px">
+                    <Icon type="person" slot="prepend"></Icon>
+                </Input>
+                <Input type="password" v-model="formAccount.password" placeholder="密码" style="margin-top: 5px">
+                    <Icon type="locked" slot="prepend"></Icon>
+                </Input>
+                <Button type="primary" @click="handleAddSubmit('formInline')"  style="margin-top: 5px">添加账号</Button>
             </Col>
             <Col span="17" class="setting-layout-right">
-            <Card>
-                <Form ref="formInline" :model="formAccount" :rules="ruleInline" inline>
-                    <FormItem prop="user">
-                        <Input type="text" v-model="formAccount.account" placeholder="账号">
-                        <Icon type="person" slot="prepend"></Icon>
-                        </Input>
-                    </FormItem>
-                    <FormItem prop="password">
-                        <Input type="password" v-model="formAccount.password" placeholder="密码">
-                        <Icon type="locked" slot="prepend"></Icon>
-                        </Input>
-                    </FormItem>
-                    <FormItem>
-                        <Button type="primary" @click="handleAddSubmit('formInline')">添加账号</Button>
-                    </FormItem>
-                </Form>
-            </Card>
             <Card style="margin-top: 10px">
                 <Form :model="settings" :label-width="120">
                     <FormItem label="账号登录间隔">
@@ -121,7 +113,12 @@
         }
       }
     },
-    created () {
+    mounted () {
+      let that = this
+      this.$store.dispatch('GetSettings').then(res => {
+        console.log('GetSettings', res)
+        that.settings = JSON.parse(res)
+      })
     },
     methods: {
       save () {

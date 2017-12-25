@@ -1,13 +1,12 @@
 <style scoped>
     .main-layout {
-        background: #2B2B2B;
-        background-size: cover;
         overflow: hidden;
+        width: 100%;
+        height: 100%;
     }
 
     .main-layout-menu {
         background-color: rgb(60, 63, 65);
-        height: 60px;
     }
 
     .main-layout-menu-item {
@@ -27,14 +26,14 @@
     }
 
     .main-layout-nav {
-        width: 700px;
-        margin: 0 auto;
+        width: 100%;
     }
-
     .main-layout-content {
         background: #2B2B2B;
         min-height: 200px;
         overflow: hidden;
+        width: 100%;
+        height: 100%;
     }
 </style>
 <template>

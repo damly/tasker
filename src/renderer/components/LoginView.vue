@@ -66,16 +66,12 @@
 </template>
 
 <script>
-  import Title from './Title.vue'
   export default {
-    components: {
-      Title
-    },
     data () {
       return {
         form: {
-          userName: '',
-          password: ''
+          userName: 'admin',
+          password: '123456'
         },
         rules: {
           userName: [

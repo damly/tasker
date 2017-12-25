@@ -1,7 +1,10 @@
+const Store = require('electron-store')
+const store = new Store()
+
 const user = {
   state: {
     login: '',
-    token: 'ddddd',
+    token: '',
     nickname: '',
     type: 0,
     settings: {}
@@ -24,6 +27,7 @@ const user = {
     Login ({commit}, data) {
       return new Promise((resolve, reject) => {
         commit('SET_TOKEN', '11111111')
+        console.log('settings', store.get('settings', []))
         resolve()
       })
     },
@@ -34,10 +38,19 @@ const user = {
     SaveSettings ({commit}, settings) {
       commit('SET_SETTINGS', JSON.stringify(settings))
       console.log('save', settings)
+      store.set('settings', JSON.stringify(settings))
     },
 
-    UserUpdate ({commit}, userInfo) {
-
+    GetSettings ({commit}) {
+      return new Promise((resolve, reject) => {
+        if (store.has('settings')) {
+          let settings = store.get('settings', [])
+          resolve(settings)
+        } else {
+          let error = 'has not settings'
+          reject(error)
+        }
+      })
     }
   }
 }

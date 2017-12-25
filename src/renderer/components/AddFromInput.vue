@@ -73,6 +73,8 @@
     </div>
 </template>
 <script>
+  /* eslint-disable no-empty-function */
+
   import { startWorking, stopWorking, onEvent } from './Event'
   var xlsx = require('node-xlsx')
   export default {
